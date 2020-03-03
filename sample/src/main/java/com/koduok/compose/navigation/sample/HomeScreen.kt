@@ -25,11 +25,7 @@ fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
 
     AdapterList(data = data) {
         Clickable(onClick = { onShowSample(it) }) {
-            Card(
-                modifier = Fill + LayoutPadding(
-                    8.dp
-                )
-            ) {
+            Card(modifier = Fill + LayoutPadding(8.dp)) {
                 Text(
                     text = it.toString(),
                     modifier = LayoutPadding(16.dp),
