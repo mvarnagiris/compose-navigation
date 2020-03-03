@@ -39,7 +39,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':navigation')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:1.2.0"
     implementation "androidx.appcompat:appcompat:1.1.0"
@@ -49,4 +48,5 @@ dependencies {
     implementation "androidx.ui:ui-layout:$compose_version"
     implementation "androidx.ui:ui-material:$compose_version"
     implementation "androidx.ui:ui-tooling:$compose_version"
+    implementation "com.github.mvarnagiris.compose-navigation:navigation:0.1.1"
 }

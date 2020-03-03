@@ -40,9 +40,9 @@ android {
 }
 
 dependencies {
-    api project(path: ':core')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.compose:compose-runtime:$compose_version"
+    api "com.github.mvarnagiris.compose-navigation:core:0.1.1"
 
     kapt "androidx.compose:compose-compiler:$compose_version"
 }
