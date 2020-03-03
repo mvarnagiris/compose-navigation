@@ -41,11 +41,11 @@ Wherever you want routing to happen add `Router`:
 ```kotlin
 @Composable
 fun AppRoot() {
-    Router<AppRoute>(start = SplashRoute) {
+    Router<AppRoute>(start = SplashRoute) { currentRoute ->
         // this lambda has this signature: BackStack<AppRoute>.(Route<AppRoute>) -> Unit
         // this is BackStack<AppRoute>. So you can call BackStack methods easily like push(...), pop(), etc.
-        // it is Route<AppRoute> that contains current AppRoute and other metadata like index and back stack identifier
-        when (val route = it.data) {
+        // currentRoute is Route<AppRoute> that contains current AppRoute as data and other metadata like index and back stack identifier
+        when (val route = currentRoute.data) {
             SplashRoute -> SplashScreen(onInitialized = { replace(HomeRoute) })
             HomeRoute -> HomeScreen(onDetailsSelected = { id -> push(DetailsRoute(id)) })
             is DetailsRoute -> DetailsScreen(route.id)
