@@ -20,4 +20,8 @@ sealed class AppRoute {
     object SplitScreenRoute : AppRoute() {
         override fun toString(): String = "Split screen"
     }
+
+    object ComplexRoute : AppRoute() {
+        override fun toString(): String = "Complex"
+    }
 }

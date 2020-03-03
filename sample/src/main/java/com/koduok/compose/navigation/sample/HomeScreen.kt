@@ -10,6 +10,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Card
 import androidx.ui.unit.dp
 import com.koduok.compose.navigation.sample.AppRoute.BottomTabsRoute
+import com.koduok.compose.navigation.sample.AppRoute.ComplexRoute
 import com.koduok.compose.navigation.sample.AppRoute.MultipleStartRoute
 import com.koduok.compose.navigation.sample.AppRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
@@ -20,7 +21,8 @@ fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
         SimpleRoute,
         MultipleStartRoute,
         BottomTabsRoute,
-        SplitScreenRoute
+        SplitScreenRoute,
+        ComplexRoute
     )
 
     AdapterList(data = data) {

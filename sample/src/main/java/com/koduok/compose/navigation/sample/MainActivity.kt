@@ -26,11 +26,13 @@ import com.koduok.compose.navigation.core.GlobalRoute
 import com.koduok.compose.navigation.core.Route
 import com.koduok.compose.navigation.core.backStackController
 import com.koduok.compose.navigation.sample.AppRoute.BottomTabsRoute
+import com.koduok.compose.navigation.sample.AppRoute.ComplexRoute
 import com.koduok.compose.navigation.sample.AppRoute.HomeRoute
 import com.koduok.compose.navigation.sample.AppRoute.MultipleStartRoute
 import com.koduok.compose.navigation.sample.AppRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
 import com.koduok.compose.navigation.sample.examples.BottomTabsScreen
+import com.koduok.compose.navigation.sample.examples.ComplexScreen
 import com.koduok.compose.navigation.sample.examples.MultipleStartScreen
 import com.koduok.compose.navigation.sample.examples.SimpleScreen
 import com.koduok.compose.navigation.sample.examples.SplitScreen
@@ -61,6 +63,7 @@ fun SampleApp() {
                 MultipleStartRoute -> MultipleStartScreen()
                 BottomTabsRoute -> BottomTabsScreen()
                 SplitScreenRoute -> SplitScreen()
+                ComplexRoute -> ComplexScreen()
             }
         }
     }
