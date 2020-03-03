@@ -1,6 +1,5 @@
-package com.koduok.compose.navigation.sample
+package com.koduok.compose.navigation.sample.examples
 
-import android.text.TextUtils.replace
 import androidx.compose.Composable
 import androidx.ui.core.Text
 import androidx.ui.foundation.Box
@@ -18,9 +17,9 @@ import androidx.ui.text.font.FontWeight.Companion
 import androidx.ui.unit.dp
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.BackStack
-import com.koduok.compose.navigation.sample.TabRoute.TabA
-import com.koduok.compose.navigation.sample.TabRoute.TabB
-import com.koduok.compose.navigation.sample.TabRoute.TabC
+import com.koduok.compose.navigation.sample.examples.TabRoute.TabA
+import com.koduok.compose.navigation.sample.examples.TabRoute.TabB
+import com.koduok.compose.navigation.sample.examples.TabRoute.TabC
 
 @Composable
 fun BottomTabsScreen() {

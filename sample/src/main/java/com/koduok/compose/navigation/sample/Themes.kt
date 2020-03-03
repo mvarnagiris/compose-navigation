@@ -1,6 +1,8 @@
 package com.koduok.compose.navigation.sample
 
+import androidx.compose.Composable
 import androidx.ui.graphics.Color
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.lightColorPalette
 
 val lightThemeColors
@@ -8,3 +10,6 @@ val lightThemeColors
         primary = Color.Black,
         onPrimary = Color.White
     )
+
+@Composable
+fun AppTheme(children: @Composable() () -> Unit) = MaterialTheme(colors = lightThemeColors, children = children)
