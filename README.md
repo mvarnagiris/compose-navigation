@@ -1,5 +1,7 @@
 # compose-navigation
 
+[![](https://jitpack.io/v/mvarnagiris/compose-navigation.svg)](https://jitpack.io/#mvarnagiris/compose-navigation)
+
 - Navigate completely within Jetpack Compose
 - Use `Router` as any other composable
 - Nest `Router`s however you like to support split screens or bottom tabs
@@ -17,7 +19,7 @@ allprojects {
 ```
 Add dependency in your app `build.gradle`:
 ```groovy
-TODO()
+implementation 'com.github.mvarnagiris.compose-navigation:navigation:{latest_version}'
 ```
 ## How to use
 
