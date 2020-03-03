@@ -33,6 +33,7 @@ import com.koduok.compose.navigation.core.backStackController
 import com.koduok.compose.navigation.sample.AppRoute.BottomTabsRoute
 import com.koduok.compose.navigation.sample.AppRoute.HomeRoute
 import com.koduok.compose.navigation.sample.AppRoute.LinearRoute
+import com.koduok.compose.navigation.sample.AppRoute.MultiStartLinearRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
 
 class MainActivity : AppCompatActivity() {
@@ -87,6 +88,7 @@ fun SampleApp() {
             when (it.data) {
                 HomeRoute -> HomeScreen { appRoute -> push(appRoute) }
                 LinearRoute -> LinearScreen()
+                MultiStartLinearRoute -> MultiStartLinearScreen()
                 BottomTabsRoute -> BottomTabsScreen()
                 SplitScreenRoute -> SplitScreen()
             }
@@ -112,7 +114,11 @@ sealed class AppRoute {
     }
 
     object LinearRoute : AppRoute() {
-        override fun toString(): String = "Linear"
+        override fun toString(): String = "Simple"
+    }
+
+    object MultiStartLinearRoute : AppRoute() {
+        override fun toString(): String = "Multiple start routes"
     }
 
     object BottomTabsRoute : AppRoute() {
@@ -128,6 +134,7 @@ sealed class AppRoute {
 fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
     val data = listOf(
         LinearRoute,
+        MultiStartLinearRoute,
         BottomTabsRoute,
         SplitScreenRoute
     )

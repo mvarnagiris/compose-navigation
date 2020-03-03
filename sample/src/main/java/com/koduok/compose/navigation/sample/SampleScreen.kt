@@ -26,8 +26,8 @@ fun SampleScreen(sampleRoute: SampleRoute, onNext: () -> Unit) {
 }
 
 @Composable
-fun SampleScreenRouter(routerName: String) {
-    Router(routerName, start = SampleRoute(0)) {
+fun SampleScreenRouter(routerName: String, otherStart: List<SampleRoute> = emptyList()) {
+    Router(routerName, start = SampleRoute(0), otherStart = otherStart) {
         SampleScreen(it.data) {
             push(SampleRoute(it.data.value + 1))
         }
