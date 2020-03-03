@@ -1,4 +1,4 @@
 include ':navigation'
 include ':core'
 include ':sample'
-rootProject.name = "compose-navigation"
+//rootProject.name = "compose-navigation"

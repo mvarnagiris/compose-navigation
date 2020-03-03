@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    api project(':core')
+    compile project(path: ':core')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.compose:compose-runtime:$compose_version"
 
