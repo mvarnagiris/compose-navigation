@@ -1,5 +1,7 @@
 # compose-navigation
 
+[![](https://jitpack.io/v/mvarnagiris/compose-navigation.svg)](https://jitpack.io/#mvarnagiris/compose-navigation)
+
 - Navigate completely within Jetpack Compose
 - Use `Router` as any other composable
 - Nest `Router`s however you like to support split screens or bottom tabs
@@ -17,7 +19,7 @@ allprojects {
 ```
 Add dependency in your app `build.gradle`:
 ```groovy
-TODO()
+implementation 'com.github.mvarnagiris.compose-navigation:navigation:{latest_version}'
 ```
 ## How to use
 
@@ -72,8 +74,8 @@ fun DetailsScreen(id: String) {
 BackStack operations:
 - **push** - push one or more routes into the back stack
 - **pop** - remove top most route from the back stack. It will not remove last route
-- **replace** - replace top most route with one or more routes
-- **replaceRoute** - replace specific route with one or more routes
+- **replace** - replace top most route with zero or more routes
+- **replaceRoute** - replace specific route with zero or more routes
 
 `backStackController.pop()` will pop from global back stack. Each `Router` has it's own `BackStack` and all of them are controlled by `backStackController` which has global back stack
 
