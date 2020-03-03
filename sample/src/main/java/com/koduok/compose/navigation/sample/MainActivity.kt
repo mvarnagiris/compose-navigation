@@ -31,8 +31,8 @@ import com.koduok.compose.navigation.sample.AppRoute.MultipleStartRoute
 import com.koduok.compose.navigation.sample.AppRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
 import com.koduok.compose.navigation.sample.examples.BottomTabsScreen
-import com.koduok.compose.navigation.sample.examples.LinearScreen
-import com.koduok.compose.navigation.sample.examples.MultiStartLinearScreen
+import com.koduok.compose.navigation.sample.examples.MultipleStartScreen
+import com.koduok.compose.navigation.sample.examples.SimpleScreen
 import com.koduok.compose.navigation.sample.examples.SplitScreen
 
 class MainActivity : AppCompatActivity() {
@@ -57,8 +57,8 @@ fun SampleApp() {
         Router<AppRoute>("Root", HomeRoute) {
             when (it.data) {
                 HomeRoute -> HomeScreen { appRoute -> push(appRoute) }
-                SimpleRoute -> LinearScreen()
-                MultipleStartRoute -> MultiStartLinearScreen()
+                SimpleRoute -> SimpleScreen()
+                MultipleStartRoute -> MultipleStartScreen()
                 BottomTabsRoute -> BottomTabsScreen()
                 SplitScreenRoute -> SplitScreen()
             }
