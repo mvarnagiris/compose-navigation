@@ -5,6 +5,8 @@ plugins {
     id 'com.github.dcendents.android-maven'
 }
 
+group = 'com.github.mvarnagiris'
+
 android {
     compileSdkVersion 29
 
@@ -47,5 +49,3 @@ dependencies {
 
     kapt "androidx.compose:compose-compiler:$compose_version"
 }
-
-group = 'com.github.mvarnagiris.compose-navigation'
