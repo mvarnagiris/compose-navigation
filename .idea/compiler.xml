@@ -2,6 +2,9 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="compose-navigation.core" target="1.8" />
+      <module name="compose-navigation.navigation" target="1.8" />
+      <module name="compose-navigation.sample" target="1.8" />
       <module name="core" target="1.8" />
       <module name="navigation" target="1.8" />
       <module name="sample" target="1.8" />
