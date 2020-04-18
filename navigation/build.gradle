@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
     id 'com.github.dcendents.android-maven'
 }
 
@@ -44,4 +45,6 @@ dependencies {
     api project(path: ':core')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.compose:compose-runtime:$compose_version"
+
+    kapt "androidx.compose:compose-compiler:$compose_version"
 }
