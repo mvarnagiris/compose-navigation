@@ -22,12 +22,12 @@ inline fun <reified T : Any> Router(start: T, otherStart: List<T> = emptyList(),
 fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(), children: @Composable() BackStack<T>.(Route<T>) -> Unit) {
     val parentKey = remember { NullableBackStackAmbient.current?.key }
     val backStack = remember { backStackController.register(id, parentKey, start, otherStart) }
-    var currentRouteState by state { backStack.current }
+    val currentRouteState = state { backStack.current }
 
     onActive {
         val listener = object : BackStack.Listener<T> {
             override fun onCurrentChanged(route: Route<T>) {
-                currentRouteState = route
+                currentRouteState.value = route
             }
         }
         backStack.addListener(listener)
@@ -39,6 +39,6 @@ fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(
 
     @Suppress("UNCHECKED_CAST") val anyBackStack = backStack as BackStack<Any>
     Providers(BackStackAmbient.provides(anyBackStack), NullableBackStackAmbient.provides(anyBackStack)) {
-        children(backStack, currentRouteState)
+        children(backStack, currentRouteState.value)
     }
 }
