@@ -1,13 +1,13 @@
 package com.koduok.compose.navigation.sample.examples
 
 import androidx.compose.Composable
-import androidx.ui.core.Text
+import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.Text
 import androidx.ui.graphics.Color
-import androidx.ui.layout.Center
 import androidx.ui.layout.Column
-import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.height
 import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.unit.dp
@@ -22,19 +22,17 @@ fun ComplexScreen() {
         when (val route = it.data) {
             HomeRoute -> SampleScreen(sampleRoute = SampleRoute(0), onNext = { push(SplitRoute) })
             SplitRoute -> Column {
-                Box(modifier = LayoutHeight(72.dp)) {
+                Box(modifier = Modifier.height(72.dp)) {
                     Clickable(onClick = { push(SimpleRoute(2)) }) {
-                        Center {
-                            Text(text = "D1", style = MaterialTheme.typography().h3)
-                        }
+                        Text(text = "D1", style = MaterialTheme.typography.h3)
                     }
                 }
                 Divider(color = Color.Black)
-                Box(modifier = LayoutFlexible(1f)) {
+                Box(modifier = Modifier.weight(1f)) {
                     BottomTabsScreen()
                 }
                 Divider(color = Color.Black)
-                Box(modifier = LayoutFlexible(1f)) {
+                Box(modifier = Modifier.weight(1f)) {
                     SampleScreenRouter("E")
                 }
             }

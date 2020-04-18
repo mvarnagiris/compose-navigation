@@ -1,13 +1,14 @@
 package com.koduok.compose.navigation.sample
 
 import androidx.compose.Composable
-import androidx.ui.core.Text
+import androidx.ui.core.Modifier
 import androidx.ui.foundation.AdapterList
 import androidx.ui.foundation.Clickable
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutWidth.Fill
+import androidx.ui.foundation.Text
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.padding
+import androidx.ui.material.Card
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.surface.Card
 import androidx.ui.unit.dp
 import com.koduok.compose.navigation.sample.AppRoute.BottomTabsRoute
 import com.koduok.compose.navigation.sample.AppRoute.ComplexRoute
@@ -27,11 +28,11 @@ fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
 
     AdapterList(data = data) {
         Clickable(onClick = { onShowSample(it) }) {
-            Card(modifier = Fill + LayoutPadding(8.dp)) {
+            Card(modifier = Modifier.fillMaxSize().padding(8.dp)) {
                 Text(
                     text = it.toString(),
-                    modifier = LayoutPadding(16.dp),
-                    style = MaterialTheme.typography().h5
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.h5
                 )
             }
         }

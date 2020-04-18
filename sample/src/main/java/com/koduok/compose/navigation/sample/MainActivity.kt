@@ -5,16 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
 import androidx.compose.onActive
 import androidx.compose.state
-import androidx.ui.core.Text
+import androidx.ui.core.Modifier
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.HorizontalScroller
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
-import androidx.ui.layout.LayoutHeight
-import androidx.ui.layout.LayoutSize.Fill
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.height
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.surface.Surface
+import androidx.ui.material.Surface
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontFamily
 import androidx.ui.tooling.preview.Preview
@@ -71,11 +72,11 @@ fun SampleApp() {
 
 @Composable
 fun BackStackVisualizer() {
-    var globalRoutes by state { backStackController.snapshot }
+    val globalRoutes = state { backStackController.snapshot }
     onActive {
         val listener = object : BackStackController.Listener {
             override fun onBackStackChanged(snapshot: List<GlobalRoute>) {
-                globalRoutes = snapshot
+                globalRoutes.value = snapshot
             }
         }
         backStackController.addListener(listener)
@@ -84,13 +85,13 @@ fun BackStackVisualizer() {
         }
     }
 
-    Box(modifier = LayoutHeight(144.dp)) {
-        Surface(modifier = Fill, color = MaterialTheme.colors().primary) {
-            VerticalScroller(modifier = Fill) {
-                HorizontalScroller(modifier = Fill) {
+    Box(modifier = Modifier.height(144.dp)) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
+            VerticalScroller(modifier = Modifier.fillMaxSize()) {
+                HorizontalScroller(modifier = Modifier.fillMaxSize()) {
                     Text(
-                        modifier = Fill,
-                        text = buildBackStackVisual(globalRoutes), style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+                        modifier = Modifier.fillMaxSize(),
+                        text = buildBackStackVisual(globalRoutes.value), style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp)
                     )
                 }
 

@@ -14,3 +14,5 @@ java {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
+
+compileKotlin.kotlinOptions.freeCompilerArgs += ["-module-name", "compose-navigation.core"]

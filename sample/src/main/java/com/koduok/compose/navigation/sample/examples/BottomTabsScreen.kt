@@ -1,13 +1,14 @@
 package com.koduok.compose.navigation.sample.examples
 
 import androidx.compose.Composable
-import androidx.ui.core.Text
+import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.Text
 import androidx.ui.graphics.Color
-import androidx.ui.layout.Center
 import androidx.ui.layout.Column
 import androidx.ui.layout.RowScope
+import androidx.ui.layout.fillMaxSize
 import androidx.ui.material.BottomNavigation
 import androidx.ui.material.MaterialTheme
 import com.koduok.compose.navigation.Router
@@ -20,7 +21,7 @@ import com.koduok.compose.navigation.sample.examples.TabRoute.TabC
 fun BottomTabsScreen() {
     Router<TabRoute>("Tab", start = TabA) {
         Column {
-            Box(modifier = LayoutFlexible(1f)) {
+            Box(modifier = Modifier.weight(1f)) {
                 when (it.data) {
                     TabA -> SampleScreenRouter("A")
                     TabB -> SampleScreenRouter("B")
@@ -40,12 +41,12 @@ fun BottomTabsScreen() {
 @Composable
 fun RowScope.TabButton(backStack: BackStack<TabRoute>, tabRoute: TabRoute, currentTabRoute: TabRoute) {
     val isSelected = currentTabRoute == tabRoute
-    Box(modifier = LayoutFlexible(1f), backgroundColor = Color.Gray.copy(alpha = if (isSelected) 1f else 0.3f)) {
+    Box(modifier = Modifier.weight(1f), backgroundColor = Color.Gray.copy(alpha = if (isSelected) 1f else 0.3f)) {
         Clickable(onClick = { backStack.replace(tabRoute) }) {
-            Center {
+            Box(Modifier.fillMaxSize()) {
                 Text(
                     text = tabRoute.toString(),
-                    style = MaterialTheme.typography().h5
+                    style = MaterialTheme.typography.h5
                 )
             }
         }

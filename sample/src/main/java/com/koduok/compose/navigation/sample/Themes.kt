@@ -12,4 +12,4 @@ val lightThemeColors
     )
 
 @Composable
-fun AppTheme(children: @Composable() () -> Unit) = MaterialTheme(colors = lightThemeColors, children = children)
+fun AppTheme(content: @Composable() () -> Unit) = MaterialTheme(colors = lightThemeColors, content = content)
