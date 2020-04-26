@@ -45,12 +45,13 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
         routes.addAll(routesToPush)
         backStackController.onPushed(routesToPush)
 
+        val listeners = listeners.toList()
         routesToPush.forEach {
-            listeners.iterator().forEach { listener -> listener.onAdded(it) }
+            listeners.forEach { listener -> listener.onAdded(it) }
         }
 
         if (data.isNotEmpty()) {
-            listeners.iterator().forEach { listener -> listener.onCurrentChanged(current) }
+            listeners.forEach { listener -> listener.onCurrentChanged(current) }
         }
     }
 
@@ -61,7 +62,8 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
         val removedRoute = routes.removeAt(removedIndex)
         backStackController.onRemoved(removedRoute)
 
-        listeners.iterator().forEach { listener ->
+        val listeners = listeners.toList()
+        listeners.forEach { listener ->
             listener.onRemoved(removedRoute)
             listener.onCurrentChanged(current)
         }
@@ -89,15 +91,16 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
         backStackController.onReplaced(route, routesToAdd)
         backStackController.onIndexChanged(updatedIndexRoutes)
 
-        listeners.iterator().forEach { listener -> listener.onRemoved(route) }
+        val listeners = listeners.toList()
+        listeners.forEach { listener -> listener.onRemoved(route) }
         routesToAdd.forEach {
-            listeners.iterator().forEach { listener -> listener.onAdded(it) }
+            listeners.forEach { listener -> listener.onAdded(it) }
         }
         updatedIndexRoutes.forEach {
-            listeners.iterator().forEach { listener -> listener.onIndexChanged(it.second, it.first.index) }
+            listeners.forEach { listener -> listener.onIndexChanged(it.second, it.first.index) }
         }
         if (currentRoute != current) {
-            listeners.iterator().forEach { listener -> listener.onCurrentChanged(current) }
+            listeners.forEach { listener -> listener.onCurrentChanged(current) }
         }
 
         return true
@@ -111,7 +114,8 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
             routes.removeAt(removedIndex)
         }
 
-        listeners.iterator().forEach { listener ->
+        val listeners = listeners.toList()
+        listeners.forEach { listener ->
             listener.onRemoved(removedRoute)
             if (isNotRoot) {
                 listener.onCurrentChanged(current)
