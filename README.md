@@ -77,6 +77,7 @@ BackStack operations:
 - **replace** - replace top most route with zero or more routes
 - **replaceRoute** - replace specific route with zero or more routes
 - **popUntil** - pop routes until predicate returns true or until last route
+- **popUntilAndPush** - pop routes until predicate returns true or until last route then push given routes into the back stack
 
 `backStackController.pop()` will pop from global back stack. Each `Router` has it's own `BackStack` and all of them are controlled by `backStackController` which has global back stack
 

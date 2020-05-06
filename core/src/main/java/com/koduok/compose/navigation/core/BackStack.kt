@@ -74,9 +74,9 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
     fun popUntil(predicate: (Route<T>) -> Boolean): Boolean {
         if (current.index == 0) return false
 
-        val currentIndex = current.index
+        val currentRoute = current
         val listeners = listeners.toList()
-        var indexToBeRemoved = currentIndex
+        var indexToBeRemoved = currentRoute.index
         var routeToBeRemoved = routes[indexToBeRemoved]
         while (routeToBeRemoved.index > 0 && !predicate(routeToBeRemoved)) {
             routes.removeAt(indexToBeRemoved)
@@ -87,9 +87,41 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
             routeToBeRemoved = routes[indexToBeRemoved]
         }
 
-        if (currentIndex == current.index) return false
+        val newCurrent = current
+        if (currentRoute == newCurrent) return false
+
+        listeners.forEach { listener -> listener.onCurrentChanged(newCurrent) }
+
+        return true
+    }
+
+    fun popUntilAndPush(vararg data: T, predicate: (Route<T>) -> Boolean): Boolean {
+        if (current.index == 0) return false
+
+        val currentRoute = current
+        val listeners = listeners.toList()
+        var indexToBeRemoved = currentRoute.index
+        var routeToBeRemoved = routes[indexToBeRemoved]
+        while (routeToBeRemoved.index > 0 && !predicate(routeToBeRemoved)) {
+            routes.removeAt(indexToBeRemoved)
+            backStackController.onRemoved(routeToBeRemoved)
+
+            listeners.forEach { listener -> listener.onRemoved(routeToBeRemoved) }
+            indexToBeRemoved = current.index
+            routeToBeRemoved = routes[indexToBeRemoved]
+        }
+
+        val startIndex = current.index + 1
+        val routesToPush = data.mapIndexed { index: Int, route: T -> Route(key, startIndex + index, route) }
+        routes.addAll(routesToPush)
+        backStackController.onPushed(routesToPush)
+        routesToPush.forEach {
+            listeners.forEach { listener -> listener.onAdded(it) }
+        }
 
         val newCurrent = current
+        if (currentRoute == newCurrent) return false
+
         listeners.forEach { listener -> listener.onCurrentChanged(newCurrent) }
 
         return true
