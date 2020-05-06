@@ -71,6 +71,30 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
         return true
     }
 
+    fun popUntil(predicate: (Route<T>) -> Boolean): Boolean {
+        if (current.index == 0) return false
+
+        val currentIndex = current.index
+        val listeners = listeners.toList()
+        var indexToBeRemoved = currentIndex
+        var routeToBeRemoved = routes[indexToBeRemoved]
+        while (routeToBeRemoved.index > 0 && !predicate(routeToBeRemoved)) {
+            routes.removeAt(indexToBeRemoved)
+            backStackController.onRemoved(routeToBeRemoved)
+
+            listeners.forEach { listener -> listener.onRemoved(routeToBeRemoved) }
+            indexToBeRemoved = current.index
+            routeToBeRemoved = routes[indexToBeRemoved]
+        }
+
+        if (currentIndex == current.index) return false
+
+        val newCurrent = current
+        listeners.forEach { listener -> listener.onCurrentChanged(newCurrent) }
+
+        return true
+    }
+
     fun replace(vararg withData: T) = replaceRoute(routes.last(), *withData)
 
     fun replaceRoute(route: Route<T>, vararg withData: T): Boolean {
