@@ -21,7 +21,10 @@ class BackStackController internal constructor() {
     private val globalRoutes = mutableListOf<GlobalRoute>()
     val snapshot: List<GlobalRoute> get() = globalRoutes.toList()
 
-    fun <T : Any> register(id: BackStackId, parentKey: BackStackKey?, start: T, otherStart: List<T>): BackStack<T> {
+    fun <T : Any> register(id: BackStackId, parentKey: BackStackKey?, start: T, otherStart: List<T>) =
+        register(id, parentKey, RouteDescription(start), otherStart.map { RouteDescription(it) })
+
+    fun <T : Any> register(id: BackStackId, parentKey: BackStackKey?, start: RouteDescription<T>, otherStart: List<RouteDescription<T>>): BackStack<T> {
         val key = BackStackKey(id, parentKey)
         val existing = getExistingBackStack(key, start, otherStart)
         if (existing != null) return existing
@@ -41,8 +44,9 @@ class BackStackController internal constructor() {
         return backStack
     }
 
-    private fun <T : Any> getExistingBackStack(key: BackStackKey, start: T, otherStart: List<T>): BackStack<T>? {
+    private fun <T : Any> getExistingBackStack(key: BackStackKey, start: RouteDescription<T>, otherStart: List<RouteDescription<T>>): BackStack<T>? {
         val existingBackStack = backStacks[key]
+
         @Suppress("UNCHECKED_CAST")
         val existingTypedBackStack = existingBackStack as? BackStack<T>?
         if (existingBackStack != null && existingTypedBackStack == null) {

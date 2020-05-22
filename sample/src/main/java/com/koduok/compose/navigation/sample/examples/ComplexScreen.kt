@@ -21,19 +21,21 @@ fun ComplexScreen() {
     Router<ComplexRoute>("D", HomeRoute) {
         when (val route = it.data) {
             HomeRoute -> SampleScreen(sampleRoute = SampleRoute(0), onNext = { push(SplitRoute) })
-            SplitRoute -> Column {
-                Box(modifier = Modifier.height(72.dp)) {
-                    Clickable(onClick = { push(SimpleRoute(2)) }) {
-                        Text(text = "D1", style = MaterialTheme.typography.h3)
+            SplitRoute -> {
+                Column {
+                    Box(modifier = Modifier.height(72.dp)) {
+                        Clickable(onClick = { push(SimpleRoute(2)) }) {
+                            Text(text = "D1", style = MaterialTheme.typography.h3)
+                        }
                     }
-                }
-                Divider(color = Color.Black)
-                Box(modifier = Modifier.weight(1f)) {
-                    BottomTabsScreen()
-                }
-                Divider(color = Color.Black)
-                Box(modifier = Modifier.weight(1f)) {
-                    SampleScreenRouter("E")
+                    Divider(color = Color.Black)
+                    Box(modifier = Modifier.weight(1f)) {
+                        BottomTabsScreen()
+                    }
+                    Divider(color = Color.Black)
+                    Box(modifier = Modifier.weight(1f)) {
+                        SampleScreenRouter("E")
+                    }
                 }
             }
             is SimpleRoute -> SampleScreen(sampleRoute = SampleRoute(route.value), onNext = { push(SimpleRoute(route.value + 1)) })

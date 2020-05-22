@@ -32,11 +32,13 @@ import com.koduok.compose.navigation.sample.AppRoute.HomeRoute
 import com.koduok.compose.navigation.sample.AppRoute.MultipleStartRoute
 import com.koduok.compose.navigation.sample.AppRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
+import com.koduok.compose.navigation.sample.AppRoute.TranslucentRoute
 import com.koduok.compose.navigation.sample.examples.BottomTabsScreen
 import com.koduok.compose.navigation.sample.examples.ComplexScreen
 import com.koduok.compose.navigation.sample.examples.MultipleStartScreen
 import com.koduok.compose.navigation.sample.examples.SimpleScreen
 import com.koduok.compose.navigation.sample.examples.SplitScreen
+import com.koduok.compose.navigation.sample.examples.TranslucentScreen
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +67,7 @@ fun SampleApp() {
                 BottomTabsRoute -> BottomTabsScreen()
                 SplitScreenRoute -> SplitScreen()
                 ComplexRoute -> ComplexScreen()
+                TranslucentRoute -> TranslucentScreen()
             }
         }
     }

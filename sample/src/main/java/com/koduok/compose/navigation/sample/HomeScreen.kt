@@ -15,6 +15,7 @@ import com.koduok.compose.navigation.sample.AppRoute.ComplexRoute
 import com.koduok.compose.navigation.sample.AppRoute.MultipleStartRoute
 import com.koduok.compose.navigation.sample.AppRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
+import com.koduok.compose.navigation.sample.AppRoute.TranslucentRoute
 
 @Composable
 fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
@@ -23,7 +24,8 @@ fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
         MultipleStartRoute,
         BottomTabsRoute,
         SplitScreenRoute,
-        ComplexRoute
+        ComplexRoute,
+        TranslucentRoute
     )
 
     AdapterList(data = data) {

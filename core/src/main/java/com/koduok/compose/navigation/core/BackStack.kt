@@ -28,19 +28,28 @@ data class BackStackKey internal constructor(val id: BackStackId, val parentKey:
     }
 }
 
-data class Route<T : Any> internal constructor(val key: BackStackKey, val index: Int, val data: T)
-
-class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, otherStart: List<T>) {
+class BackStack<T : Any> internal constructor(val key: BackStackKey, start: RouteDescription<T>, otherStart: List<RouteDescription<T>>) {
     private val listeners = mutableListOf<Listener<T>>()
     private val routes = mutableListOf(Route(key, 0, start))
-        .apply { addAll(otherStart.mapIndexed { index: Int, route: T -> Route(key, 1 + index, route) }) }
+        .apply { addAll(otherStart.mapIndexed { index: Int, routeDescription: RouteDescription<T> -> Route(key, 1 + index, routeDescription) }) }
 
     val snapshot get() = routes.toList()
     val current get() = routes.last()
+    val currentWithShowStack: List<Route<T>>
+        get() {
+            val current = current
+            var onTop = current
+            return snapshot.takeLastWhile {
+                val take = onTop.routeDescription.showRouteBelow || it == current
+                onTop = it
+                take
+            }
+        }
 
-    fun push(vararg data: T) {
+    fun push(vararg values: T) = push(*values.map { RouteDescription(it) }.toTypedArray())
+    fun push(vararg descriptions: RouteDescription<T>) {
         val startIndex = current.index + 1
-        val routesToPush = data.mapIndexed { index: Int, route: T -> Route(key, startIndex + index, route) }
+        val routesToPush = descriptions.mapIndexed { index: Int, description: RouteDescription<T> -> Route(key, startIndex + index, description) }
 
         routes.addAll(routesToPush)
         backStackController.onPushed(routesToPush)
@@ -50,7 +59,7 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
             listeners.forEach { listener -> listener.onAdded(it) }
         }
 
-        if (data.isNotEmpty()) {
+        if (descriptions.isNotEmpty()) {
             listeners.forEach { listener -> listener.onCurrentChanged(current) }
         }
     }
@@ -95,7 +104,7 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
         return true
     }
 
-    fun popUntilAndPush(vararg data: T, predicate: (Route<T>) -> Boolean): Boolean {
+    fun popUntilAndPush(vararg descriptions: RouteDescription<T>, predicate: (Route<T>) -> Boolean): Boolean {
         if (current.index == 0) return false
 
         val currentRoute = current
@@ -112,7 +121,7 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
         }
 
         val startIndex = current.index + 1
-        val routesToPush = data.mapIndexed { index: Int, route: T -> Route(key, startIndex + index, route) }
+        val routesToPush = descriptions.mapIndexed { index: Int, description: RouteDescription<T> -> Route(key, startIndex + index, description) }
         routes.addAll(routesToPush)
         backStackController.onPushed(routesToPush)
         routesToPush.forEach {
@@ -127,16 +136,18 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: T, o
         return true
     }
 
-    fun replace(vararg withData: T) = replaceRoute(routes.last(), *withData)
+    fun replace(vararg withValues: T) = replaceRoute(routes.last(), *withValues.map { RouteDescription(it) }.toTypedArray())
+    fun replace(vararg withDescriptions: RouteDescription<T>) = replaceRoute(routes.last(), *withDescriptions)
 
-    fun replaceRoute(route: Route<T>, vararg withData: T): Boolean {
+    fun replaceRoute(route: Route<T>, vararg withValues: T) = replaceRoute(route, *withValues.map { RouteDescription(it) }.toTypedArray())
+    fun replaceRoute(route: Route<T>, vararg withDescriptions: RouteDescription<T>): Boolean {
         val routeIndex = routes.indexOf(route)
         if (routeIndex < 0) return false
 
         val currentRoute = current
 
-        val indexDelta = withData.size - 1
-        val routesToAdd = withData.mapIndexed { index: Int, data: T -> Route(key, routeIndex + index, data) }
+        val indexDelta = withDescriptions.size - 1
+        val routesToAdd = withDescriptions.mapIndexed { index: Int, description: RouteDescription<T> -> Route(key, routeIndex + index, description) }
         val updatedIndexRoutes = if (indexDelta == 0) emptyList() else {
             val count = routes.size - 1 - routeIndex
             routes.takeLast(count).map { it to it.copy(index = it.index + indexDelta) }

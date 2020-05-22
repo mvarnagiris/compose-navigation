@@ -24,4 +24,8 @@ sealed class AppRoute {
     object ComplexRoute : AppRoute() {
         override fun toString(): String = "Complex"
     }
+
+    object TranslucentRoute : AppRoute() {
+        override fun toString(): String = "Translucent"
+    }
 }
