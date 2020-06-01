@@ -80,7 +80,7 @@ class BackStackController internal constructor() {
 
         val globalRoute = globalRoutes.removeAt(globalRoutes.size - 1)
         globalRoute.keys.forEach {
-            val shouldRemoveBackStack = backStacks[it]?.popFromBackStackHandler()?.not() ?: false
+            val shouldRemoveBackStack = backStacks[it]?.popFromBackStackController()?.not() ?: false
             if (shouldRemoveBackStack) {
                 backStacks.remove(it)
             }
@@ -139,9 +139,9 @@ class BackStackController internal constructor() {
 
         backStacksToClear.forEach {
             globalRoutes.removeAll(it.snapshot)
-            var popAgain = it.popFromBackStackHandler()
+            var popAgain = it.popFromBackStackController()
             while (popAgain) {
-                popAgain = it.popFromBackStackHandler()
+                popAgain = it.popFromBackStackController()
             }
             backStacks.remove(it.key)
         }

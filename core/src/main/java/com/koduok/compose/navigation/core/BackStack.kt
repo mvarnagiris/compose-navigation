@@ -35,12 +35,12 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
 
     val snapshot get() = routes.toList()
     val current get() = routes.last()
-    val currentWithShowStack: List<Route<T>>
+    val currentWithPotentialShowStack: List<Route<T>>
         get() {
             val current = current
             var onTop = current
             return snapshot.takeLastWhile {
-                val take = onTop.routeDescription.showRouteBelow || it == current
+                val take = it == current || onTop == current || onTop.routeDescription.showRouteBelow
                 onTop = it
                 take
             }
@@ -173,7 +173,7 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
         return true
     }
 
-    internal fun popFromBackStackHandler(): Boolean {
+    internal fun popFromBackStackController(): Boolean {
         val removedIndex = current.index
         val removedRoute = routes[removedIndex]
         val isNotRoot = removedIndex > 0

@@ -11,3 +11,11 @@ data class RouteDescription<T : Any>(
 ) {
     fun showRouteBelow(drawPreviousRoute: Boolean = true) = copy(showRouteBelow = drawPreviousRoute)
 }
+
+sealed class RouteState<T : Any> {
+    abstract val route: Route<T>
+
+    data class Settled<T : Any>(override val route: Route<T>) : RouteState<T>()
+    data class Entering<T : Any>(override val route: Route<T>) : RouteState<T>()
+    data class Exiting<T : Any>(override val route: Route<T>) : RouteState<T>()
+}
