@@ -3,8 +3,8 @@ package com.koduok.compose.navigation.sample.examples
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.clickable
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.RowScope
@@ -42,13 +42,11 @@ fun BottomTabsScreen() {
 fun RowScope.TabButton(backStack: BackStack<TabRoute>, tabRoute: TabRoute, currentTabRoute: TabRoute) {
     val isSelected = currentTabRoute == tabRoute
     Box(modifier = Modifier.weight(1f), backgroundColor = Color.Gray.copy(alpha = if (isSelected) 1f else 0.3f)) {
-        Clickable(onClick = { backStack.replace(tabRoute) }) {
-            Box(Modifier.fillMaxSize()) {
-                Text(
-                    text = tabRoute.toString(),
-                    style = MaterialTheme.typography.h5
-                )
-            }
+        Box(Modifier.fillMaxSize().clickable(onClick = { backStack.replace(tabRoute) })) {
+            Text(
+                text = tabRoute.toString(),
+                style = MaterialTheme.typography.h5
+            )
         }
     }
 }

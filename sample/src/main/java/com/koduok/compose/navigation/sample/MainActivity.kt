@@ -8,9 +8,9 @@ import androidx.compose.state
 import androidx.ui.core.Modifier
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.HorizontalScroller
+import androidx.ui.foundation.ScrollableColumn
+import androidx.ui.foundation.ScrollableRow
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.height
@@ -90,15 +90,15 @@ fun BackStackVisualizer() {
 
     Box(modifier = Modifier.height(144.dp)) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
-            VerticalScroller(modifier = Modifier.fillMaxSize()) {
-                HorizontalScroller(modifier = Modifier.fillMaxSize()) {
+            ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
+                ScrollableRow(modifier = Modifier.fillMaxSize(), children = {
                     Text(
                         modifier = Modifier.fillMaxSize(),
                         text = buildBackStackVisual(globalRoutes.value), style = TextStyle(fontFamily = FontFamily.Monospace, fontSize = 12.sp)
                     )
-                }
+                })
 
-            }
+            })
 
         }
     }

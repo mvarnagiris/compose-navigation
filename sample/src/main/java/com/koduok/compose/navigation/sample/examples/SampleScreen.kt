@@ -3,8 +3,8 @@ package com.koduok.compose.navigation.sample.examples
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.clickable
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.material.MaterialTheme
 import com.koduok.compose.navigation.BackStackAmbient
@@ -17,9 +17,11 @@ data class SampleRoute(val value: Int) {
 @Composable
 fun SampleScreen(sampleRoute: SampleRoute, onNext: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Clickable(onClick = onNext) {
-            Text(text = "${BackStackAmbient.current.key.id}${sampleRoute.value}", style = MaterialTheme.typography.h3)
-        }
+        Text(
+            modifier = Modifier.clickable(onClick = onNext),
+            text = "${BackStackAmbient.current.key.id}${sampleRoute.value}",
+            style = MaterialTheme.typography.h3
+        )
     }
 }
 

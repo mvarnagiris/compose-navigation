@@ -2,9 +2,9 @@ package com.koduok.compose.navigation.sample
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.AdapterList
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.clickable
+import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
 import androidx.ui.material.Card
@@ -28,15 +28,13 @@ fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
         TranslucentRoute
     )
 
-    AdapterList(data = data) {
-        Clickable(onClick = { onShowSample(it) }) {
-            Card(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-                Text(
-                    text = it.toString(),
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.h5
-                )
-            }
+    LazyColumnItems(data) {
+        Card(modifier = Modifier.fillMaxSize().padding(8.dp).clickable(onClick = { onShowSample(it) })) {
+            Text(
+                text = it.toString(),
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.h5
+            )
         }
     }
 }

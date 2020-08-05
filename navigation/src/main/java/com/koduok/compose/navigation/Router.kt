@@ -22,7 +22,7 @@ inline fun <reified T : Any> Router(start: T, otherStart: List<T> = emptyList(),
 
 @Composable
 fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(), children: @Composable BackStack<T>.(Route<T>) -> Unit) {
-    val parentKey = remember { NullableBackStackAmbient.current?.key }
+    val parentKey = NullableBackStackAmbient.current?.key
     val backStack = remember { backStackController.register(id, parentKey, start, otherStart) }
     val showRoutesState = state { backStack.currentWithShowStack }
 
