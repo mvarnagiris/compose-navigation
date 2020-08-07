@@ -1,11 +1,11 @@
 package com.koduok.compose.navigation.sample.examples
 
-import androidx.compose.Composable
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.material.Divider
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Divider
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun SplitScreen() {

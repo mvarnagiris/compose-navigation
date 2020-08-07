@@ -1,6 +1,6 @@
 package com.koduok.compose.navigation.sample.examples
 
-import androidx.compose.Composable
+import androidx.compose.runtime.Composable
 
 @Composable
 fun MultipleStartScreen() {

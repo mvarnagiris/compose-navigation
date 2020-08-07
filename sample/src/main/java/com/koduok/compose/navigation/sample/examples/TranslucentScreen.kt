@@ -1,16 +1,16 @@
 package com.koduok.compose.navigation.sample.examples
 
-import androidx.compose.Composable
-import androidx.ui.core.Modifier
-import androidx.ui.core.drawLayer
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.graphics.Color
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.material.MaterialTheme
-import androidx.ui.text.font.FontWeight
-import androidx.ui.text.style.TextAlign.Center
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.drawLayer
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import com.koduok.compose.navigation.BackStackAmbient
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.RouteDescription
@@ -43,7 +43,7 @@ fun TranslucentScreen(value: Int, opacity: Float, onNext: () -> Unit) {
                     else -> Color.Black
                 },
                 fontWeight = FontWeight.Bold,
-                textAlign = Center
+                textAlign = TextAlign.Center
             )
         )
     }
