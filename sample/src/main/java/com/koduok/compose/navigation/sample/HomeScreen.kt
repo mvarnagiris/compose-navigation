@@ -28,7 +28,7 @@ fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
     )
 
     LazyColumnFor(data) {
-        Card(modifier = Modifier.fillParentMaxSize().padding(8.dp).clickable(onClick = { onShowSample(it) })) {
+        Card(modifier = Modifier.fillParentMaxWidth().padding(8.dp).clickable(onClick = { onShowSample(it) })) {
             Text(
                 text = it.toString(),
                 modifier = Modifier.padding(16.dp),

@@ -12,8 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
-import androidx.compose.runtime.state
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.text.TextStyle
@@ -75,7 +76,7 @@ fun SampleApp() {
 
 @Composable
 fun BackStackVisualizer() {
-    val globalRoutes = state { backStackController.snapshot }
+    val globalRoutes = remember { mutableStateOf(backStackController.snapshot) }
     onActive {
         val listener = object : BackStackController.Listener {
             override fun onBackStackChanged(snapshot: List<GlobalRoute>) {
