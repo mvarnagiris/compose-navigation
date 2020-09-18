@@ -7,11 +7,11 @@ plugins {
 group = 'com.github.mvarnagiris'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -37,7 +37,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion "$compose_version"
-        kotlinCompilerVersion "1.4.0"
+        kotlinCompilerVersion "1.4.10"
     }
 }
 
