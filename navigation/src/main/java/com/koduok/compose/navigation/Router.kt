@@ -1,12 +1,14 @@
 package com.koduok.compose.navigation
 
-import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.ambientOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.state
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.koduok.compose.navigation.core.BackStack
 import com.koduok.compose.navigation.core.BackStackId
@@ -24,12 +26,12 @@ inline fun <reified T : Any> Router(start: T, otherStart: List<T> = emptyList(),
 fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(), children: @Composable BackStack<T>.(Route<T>) -> Unit) {
     val parentKey = NullableBackStackAmbient.current?.key
     val backStack = remember { backStackController.register(id, parentKey, start, otherStart) }
-    val showRoutesState = state { backStack.currentWithShowStack }
+    var showRoutesState by remember { mutableStateOf(backStack.currentWithShowStack) }
 
     onActive {
         val listener = object : BackStack.Listener<T> {
             override fun onCurrentChanged(route: Route<T>) {
-                showRoutesState.value = backStack.currentWithShowStack
+                showRoutesState = backStack.currentWithShowStack
             }
         }
         backStack.addListener(listener)
@@ -41,8 +43,8 @@ fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(
 
     @Suppress("UNCHECKED_CAST") val anyBackStack = backStack as BackStack<Any>
     Providers(BackStackAmbient.provides(anyBackStack), NullableBackStackAmbient.provides(anyBackStack)) {
-        Stack(modifier = Modifier) {
-            showRoutesState.value.forEach { children(backStack, it) }
+        Box(modifier = Modifier) {
+            showRoutesState.forEach { children(backStack, it) }
         }
     }
 }
