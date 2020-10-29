@@ -104,6 +104,9 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
         return true
     }
 
+    fun popUntilAndPush(vararg routes: T, predicate: (Route<T>) -> Boolean): Boolean =
+        popUntilAndPush(*routes.map { RouteDescription(it) }.toTypedArray(), predicate = predicate)
+
     fun popUntilAndPush(vararg descriptions: RouteDescription<T>, predicate: (Route<T>) -> Boolean): Boolean {
         if (current.index == 0) return false
 
