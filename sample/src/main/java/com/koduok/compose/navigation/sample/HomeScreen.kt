@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.koduok.compose.navigation.sample.AppRoute.BottomTabsRoute
 import com.koduok.compose.navigation.sample.AppRoute.ComplexRoute
 import com.koduok.compose.navigation.sample.AppRoute.MultipleStartRoute
+import com.koduok.compose.navigation.sample.AppRoute.ResultRoute
 import com.koduok.compose.navigation.sample.AppRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
 import com.koduok.compose.navigation.sample.AppRoute.TranslucentRoute
@@ -24,7 +25,8 @@ fun HomeScreen(onShowSample: (AppRoute) -> Unit) {
         BottomTabsRoute,
         SplitScreenRoute,
         ComplexRoute,
-        TranslucentRoute
+        TranslucentRoute,
+        ResultRoute,
     )
 
     LazyColumnFor(data) {

@@ -2,10 +2,11 @@ package com.koduok.compose.navigation.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
@@ -31,12 +33,14 @@ import com.koduok.compose.navigation.sample.AppRoute.BottomTabsRoute
 import com.koduok.compose.navigation.sample.AppRoute.ComplexRoute
 import com.koduok.compose.navigation.sample.AppRoute.HomeRoute
 import com.koduok.compose.navigation.sample.AppRoute.MultipleStartRoute
+import com.koduok.compose.navigation.sample.AppRoute.ResultRoute
 import com.koduok.compose.navigation.sample.AppRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.AppRoute.SplitScreenRoute
 import com.koduok.compose.navigation.sample.AppRoute.TranslucentRoute
 import com.koduok.compose.navigation.sample.examples.BottomTabsScreen
 import com.koduok.compose.navigation.sample.examples.ComplexScreen
 import com.koduok.compose.navigation.sample.examples.MultipleStartScreen
+import com.koduok.compose.navigation.sample.examples.ResultExampleScreen
 import com.koduok.compose.navigation.sample.examples.SimpleScreen
 import com.koduok.compose.navigation.sample.examples.SplitScreen
 import com.koduok.compose.navigation.sample.examples.TranslucentScreen
@@ -69,6 +73,7 @@ fun SampleApp() {
                 SplitScreenRoute -> SplitScreen()
                 ComplexRoute -> ComplexScreen()
                 TranslucentRoute -> TranslucentScreen()
+                ResultRoute -> ResultExampleScreen()
             }
         }
     }
@@ -89,7 +94,16 @@ fun BackStackVisualizer() {
         }
     }
 
-    Box(modifier = Modifier.height(144.dp)) {
+    val padding = border?.width ?: 0.dp
+    Box(
+        Modifier.height(144.dp).background(Color.Transparent, RectangleShape).border(null, RectangleShape).padding(
+            start = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding,
+            top = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding,
+            end = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding,
+            bottom = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding
+        ),
+        ContentGravity.TopStart
+    ) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
             ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
                 ScrollableRow(modifier = Modifier.fillMaxSize(), children = {

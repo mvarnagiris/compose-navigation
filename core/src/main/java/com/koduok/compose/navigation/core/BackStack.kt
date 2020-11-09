@@ -35,6 +35,7 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
 
     val snapshot get() = routes.toList()
     val current get() = routes.last()
+    val previous get() = routes.dropLast(1).last()
     val currentWithShowStack: List<Route<T>>
         get() {
             val current = current

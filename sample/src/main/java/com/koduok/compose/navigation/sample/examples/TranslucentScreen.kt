@@ -1,8 +1,10 @@
 package com.koduok.compose.navigation.sample.examples
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -11,7 +13,8 @@ import androidx.compose.ui.drawLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.koduok.compose.navigation.BackStackAmbient
+import androidx.compose.ui.unit.Dp
+import com.koduok.compose.navigation.AmbientBackStack
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.RouteDescription
 
@@ -33,10 +36,19 @@ data class TranslucentRoute(val value: Int, val opacity: Float)
 
 @Composable
 fun TranslucentScreen(value: Int, opacity: Float, onNext: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize().drawLayer(alpha = opacity).clickable(onClick = onNext)) {
+    val padding = border?.width ?: 0.dp
+    Box(
+        Modifier.fillMaxSize().drawLayer(alpha = opacity).clickable(onClick = onNext).background(Color.Transparent).border(null, RectangleShape).padding(
+            start = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding,
+            top = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding,
+            end = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding,
+            bottom = if (Dp.Unspecified != Dp.Unspecified) Dp.Unspecified else padding
+        ),
+        ContentGravity.TopStart
+    ) {
         Text(
             modifier = Modifier.fillMaxSize(),
-            text = "${BackStackAmbient.current.key.id}$value", style = MaterialTheme.typography.h1.copy(
+            text = "${AmbientBackStack.current.key.id}$value", style = MaterialTheme.typography.h1.copy(
                 color = when {
                     opacity <= 0.3f -> Color.Blue
                     opacity <= 0.6f -> Color.Red

@@ -28,4 +28,8 @@ sealed class AppRoute {
     object TranslucentRoute : AppRoute() {
         override fun toString(): String = "Translucent"
     }
+
+    object ResultRoute : AppRoute() {
+        override fun toString(): String = "Result"
+    }
 }

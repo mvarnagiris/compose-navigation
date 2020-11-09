@@ -15,8 +15,8 @@ import com.koduok.compose.navigation.core.BackStackId
 import com.koduok.compose.navigation.core.Route
 import com.koduok.compose.navigation.core.backStackController
 
-internal val NullableBackStackAmbient = ambientOf<BackStack<Any>?> { null }
-val BackStackAmbient = ambientOf<BackStack<Any>> { throw IllegalStateException("Missing Router(...) { ... } above") }
+internal val AmbientNullableBackStack = ambientOf<BackStack<Any>?> { null }
+val AmbientBackStack = ambientOf<BackStack<Any>> { throw IllegalStateException("Missing Router(...) { ... } above") }
 
 @Composable
 inline fun <reified T : Any> Router(start: T, otherStart: List<T> = emptyList(), noinline children: @Composable BackStack<T>.(Route<T>) -> Unit) =
@@ -24,7 +24,7 @@ inline fun <reified T : Any> Router(start: T, otherStart: List<T> = emptyList(),
 
 @Composable
 fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(), children: @Composable BackStack<T>.(Route<T>) -> Unit) {
-    val parentKey = NullableBackStackAmbient.current?.key
+    val parentKey = AmbientNullableBackStack.current?.key
     val backStack = remember { backStackController.register(id, parentKey, start, otherStart) }
     var showRoutesState by remember { mutableStateOf(backStack.currentWithShowStack) }
 
@@ -42,7 +42,7 @@ fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(
     }
 
     @Suppress("UNCHECKED_CAST") val anyBackStack = backStack as BackStack<Any>
-    Providers(BackStackAmbient.provides(anyBackStack), NullableBackStackAmbient.provides(anyBackStack)) {
+    Providers(AmbientBackStack.provides(anyBackStack), AmbientNullableBackStack.provides(anyBackStack)) {
         Box(modifier = Modifier) {
             showRoutesState.forEach { children(backStack, it) }
         }
