@@ -1,5 +1,7 @@
 package com.koduok.compose.navigation
 
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
@@ -10,8 +12,11 @@ import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ContextAmbient
 import com.koduok.compose.navigation.core.BackStack
+import com.koduok.compose.navigation.core.BackStackController
 import com.koduok.compose.navigation.core.BackStackId
+import com.koduok.compose.navigation.core.GlobalRoute
 import com.koduok.compose.navigation.core.Route
 import com.koduok.compose.navigation.core.backStackController
 
@@ -24,11 +29,25 @@ inline fun <reified T : Any> Router(start: T, otherStart: List<T> = emptyList(),
 
 @Composable
 fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(), children: @Composable BackStack<T>.(Route<T>) -> Unit) {
+    val activity = ContextAmbient.current as? ComponentActivity
     val parentKey = AmbientNullableBackStack.current?.key
     val backStack = remember { backStackController.register(id, parentKey, start, otherStart) }
     var showRoutesState by remember { mutableStateOf(backStack.currentWithShowStack) }
 
     onActive {
+        val onBackPressCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backStackController.pop()
+            }
+        }
+        activity?.onBackPressedDispatcher?.addCallback(onBackPressCallback)
+
+        backStackController.addListener(object : BackStackController.Listener {
+            override fun onBackStackChanged(snapshot: List<GlobalRoute>) {
+                onBackPressCallback.isEnabled = snapshot.size > 1
+            }
+        })
+
         val listener = object : BackStack.Listener<T> {
             override fun onCurrentChanged(route: Route<T>) {
                 showRoutesState = backStack.currentWithShowStack
@@ -38,6 +57,7 @@ fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(
 
         onDispose {
             backStack.removeListener(listener)
+            onBackPressCallback.remove()
         }
     }
 
