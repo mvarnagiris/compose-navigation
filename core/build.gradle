@@ -5,6 +5,7 @@ plugins {
 }
 
 group = 'com.github.mvarnagiris'
+version = "1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
