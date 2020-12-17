@@ -1,8 +1,9 @@
 package com.koduok.compose.navigation.sample.examples
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,7 +42,7 @@ fun BottomTabsScreen() {
 @Composable
 fun RowScope.TabButton(backStack: BackStack<TabRoute>, tabRoute: TabRoute, currentTabRoute: TabRoute) {
     val isSelected = currentTabRoute == tabRoute
-    Box(modifier = Modifier.weight(1f), backgroundColor = Color.Gray.copy(alpha = if (isSelected) 1f else 0.3f)) {
+    Box(modifier = Modifier.weight(1f).background(Color.Gray.copy(alpha = if (isSelected) 1f else 0.3f))) {
         Box(Modifier.fillMaxSize().clickable(onClick = { backStack.replace(tabRoute) })) {
             Text(
                 text = tabRoute.toString(),

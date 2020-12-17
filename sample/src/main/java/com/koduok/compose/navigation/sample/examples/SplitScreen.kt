@@ -1,6 +1,6 @@
 package com.koduok.compose.navigation.sample.examples
 
-import androidx.compose.foundation.Box
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable

@@ -1,12 +1,12 @@
 package com.koduok.compose.navigation.sample.examples
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +24,11 @@ fun ComplexScreen() {
             SplitRoute -> {
                 Column {
                     Box(modifier = Modifier.height(72.dp)) {
-                        Text(modifier = Modifier.clickable(onClick = { push(SimpleRoute(2)) }), text = "D1", style = MaterialTheme.typography.h3)
+                        Text(
+                            modifier = Modifier.clickable(onClick = { push(SimpleRoute(2)) }),
+                            text = "D1",
+                            style = MaterialTheme.typography.h3
+                        )
                     }
                     Divider(color = Color.Black)
                     Box(modifier = Modifier.weight(1f)) {

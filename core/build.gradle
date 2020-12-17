@@ -2,6 +2,7 @@ plugins {
     id 'java-library'
     id 'kotlin'
     id 'maven'
+    id 'maven-publish'
 }
 
 group = 'com.github.mvarnagiris'
