@@ -1,11 +1,15 @@
 plugins {
     id 'java-library'
     id 'kotlin'
-    id 'maven'
+    id 'maven-publish'
 }
 
-group = 'com.github.mvarnagiris'
-version = "1.0"
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        freeCompilerArgs = ["-module-name", "compose-navigation.core"]
+        jvmTarget = "1.8"
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -17,4 +21,14 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
 }
 
-compileKotlin.kotlinOptions.freeCompilerArgs += ["-module-name", "compose-navigation.core"]
+afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+                groupId = 'com.koduok.compose.navigation'
+                artifactId = 'core'
+            }
+        }
+    }
+}

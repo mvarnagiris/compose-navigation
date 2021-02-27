@@ -15,11 +15,12 @@ import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.sample.examples.ComplexRoute.HomeRoute
 import com.koduok.compose.navigation.sample.examples.ComplexRoute.SimpleRoute
 import com.koduok.compose.navigation.sample.examples.ComplexRoute.SplitRoute
+import java.io.Serializable
 
 @Composable
 fun ComplexScreen() {
     Router<ComplexRoute>("D", HomeRoute) {
-        when (val route = it.data) {
+        when (val route = it.value) {
             HomeRoute -> SampleScreen(sampleRoute = SampleRoute(0), onNext = { push(SplitRoute) })
             SplitRoute -> {
                 Column {
@@ -45,7 +46,7 @@ fun ComplexScreen() {
     }
 }
 
-sealed class ComplexRoute {
+sealed class ComplexRoute : Serializable {
     object HomeRoute : ComplexRoute() {
         override fun toString(): String = "0"
     }

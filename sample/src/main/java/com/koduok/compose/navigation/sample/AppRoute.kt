@@ -1,6 +1,8 @@
 package com.koduok.compose.navigation.sample
 
-sealed class AppRoute {
+import java.io.Serializable
+
+sealed class AppRoute : Serializable {
     object HomeRoute : AppRoute() {
         override fun toString(): String = "Home"
     }
@@ -23,13 +25,5 @@ sealed class AppRoute {
 
     object ComplexRoute : AppRoute() {
         override fun toString(): String = "Complex"
-    }
-
-    object TranslucentRoute : AppRoute() {
-        override fun toString(): String = "Translucent"
-    }
-
-    object ResultRoute : AppRoute() {
-        override fun toString(): String = "Result"
     }
 }

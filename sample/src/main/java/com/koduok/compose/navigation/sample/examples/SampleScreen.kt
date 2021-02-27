@@ -6,20 +6,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.koduok.compose.navigation.AmbientBackStack
+import com.koduok.compose.navigation.LocalBackStack
 import com.koduok.compose.navigation.Router
+import java.io.Serializable
 
-data class SampleRoute(val value: Int) {
+data class SampleRoute(val value: Int) : Serializable {
     override fun toString(): String = value.toString()
 }
 
 @Composable
 fun SampleScreen(sampleRoute: SampleRoute, onNext: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(onClick = onNext), contentAlignment = Alignment.Center
+    ) {
         Text(
-            modifier = Modifier.clickable(onClick = onNext),
-            text = "${AmbientBackStack.current.key.id}${sampleRoute.value}",
+            text = "${LocalBackStack.current.key.id}${sampleRoute.value}",
             style = MaterialTheme.typography.h3
         )
     }
@@ -28,8 +33,8 @@ fun SampleScreen(sampleRoute: SampleRoute, onNext: () -> Unit) {
 @Composable
 fun SampleScreenRouter(routerName: String, otherStart: List<SampleRoute> = emptyList()) {
     Router(routerName, start = SampleRoute(0), otherStart = otherStart) {
-        SampleScreen(it.data) {
-            push(SampleRoute(it.data.value + 1))
+        SampleScreen(it.value) {
+            push(SampleRoute(it.value.value + 1))
         }
     }
 }

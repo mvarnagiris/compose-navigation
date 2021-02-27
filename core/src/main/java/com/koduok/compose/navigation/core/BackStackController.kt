@@ -2,29 +2,13 @@ package com.koduok.compose.navigation.core
 
 val backStackController by lazy { BackStackController() }
 
-class GlobalRoute internal constructor(vararg routes: Route<*>) {
-    private val routes = mutableListOf(*routes)
-    internal val keys get() = routes.map { it.key }
-    val snapshot get() = routes.toList()
-
-    internal fun contains(key: BackStackKey) = routes.any { it.key == key }
-    internal fun contains(route: Route<*>) = routes.any { it == route }
-    internal fun add(route: Route<*>) = routes.add(route)
-    internal fun remove(route: Route<*>) = routes.remove(route)
-    internal fun isEmpty() = routes.isEmpty()
-    internal fun replace(route: Route<*>, withRoute: Route<*>) = routes.remove(route).also { routes.add(withRoute) }
-}
-
 class BackStackController internal constructor() {
     private val listeners = mutableListOf<Listener>()
     private val backStacks = mutableMapOf<BackStackKey, BackStack<*>>()
-    private val globalRoutes = mutableListOf<GlobalRoute>()
-    val snapshot: List<GlobalRoute> get() = globalRoutes.toList()
+    private val globalRoutes = mutableListOf<Route<*>>()
+    val snapshot: List<Route<*>> get() = globalRoutes.toList()
 
-    fun <T : Any> register(id: BackStackId, parentKey: BackStackKey?, start: T, otherStart: List<T>) =
-        register(id, parentKey, RouteDescription(start), otherStart.map { RouteDescription(it) })
-
-    fun <T : Any> register(id: BackStackId, parentKey: BackStackKey?, start: RouteDescription<T>, otherStart: List<RouteDescription<T>>): BackStack<T> {
+    fun <T : Any> register(id: BackStackId, parentKey: BackStackKey?, start: T, otherStart: List<T>): BackStack<T> {
         val key = BackStackKey(id, parentKey)
         val existing = getExistingBackStack(key, start, otherStart)
         if (existing != null) return existing
@@ -32,19 +16,15 @@ class BackStackController internal constructor() {
         val backStack = BackStack(key, start, otherStart)
         backStacks[key] = backStack
 
-        val backStackIndex = getLastIndexOf(parentKey)
-        val globalRoute = getOrCreateGlobalRoute(backStackIndex)
-        globalRoute.add(Route(key, 0, start))
-
-        backStack.snapshot.drop(1).forEachIndexed { index, route ->
-            globalRoutes.add(backStackIndex + index + 1, GlobalRoute(route))
+        backStack.snapshot.forEach {
+            globalRoutes.add(it)
         }
 
         notifyListeners()
         return backStack
     }
 
-    private fun <T : Any> getExistingBackStack(key: BackStackKey, start: RouteDescription<T>, otherStart: List<RouteDescription<T>>): BackStack<T>? {
+    private fun <T : Any> getExistingBackStack(key: BackStackKey, start: T, otherStart: List<T>): BackStack<T>? {
         val existingBackStack = backStacks[key]
 
         @Suppress("UNCHECKED_CAST")
@@ -61,29 +41,14 @@ class BackStackController internal constructor() {
         return existingTypedBackStack
     }
 
-    private fun getLastIndexOf(key: BackStackKey?): Int {
-        if (key == null) return 0
-        return globalRoutes.indexOfLast { it.contains(key) }
-    }
-
-    private fun getOrCreateGlobalRoute(index: Int): GlobalRoute {
-        val existing = globalRoutes.getOrNull(index)
-        if (existing != null) return existing
-
-        val globalRoute = GlobalRoute()
-        globalRoutes.add(index, globalRoute)
-        return globalRoute
-    }
-
     fun pop(): Boolean {
         if (globalRoutes.size <= 1) return false
 
         val globalRoute = globalRoutes.removeAt(globalRoutes.size - 1)
-        globalRoute.keys.forEach {
-            val shouldRemoveBackStack = backStacks[it]?.popFromBackStackHandler()?.not() ?: false
-            if (shouldRemoveBackStack) {
-                backStacks.remove(it)
-            }
+        val shouldRemoveBackStack = backStacks[globalRoute.key]?.popFromBackStackHandler()?.not() ?: false
+        if (shouldRemoveBackStack) {
+            backStacks.remove(globalRoute.key)
+            return pop()
         }
 
         notifyListeners()
@@ -91,21 +56,13 @@ class BackStackController internal constructor() {
     }
 
     internal fun onPushed(routes: List<Route<*>>) {
-        routes.forEach { globalRoutes.add(GlobalRoute(it)) }
+        routes.forEach { globalRoutes.add(it) }
         notifyListeners()
     }
 
     internal fun onRemoved(route: Route<*>) {
-        val index = globalRoutes.indexOfLast { it.contains(route) }
-        val globalRoute = globalRoutes[index]
-        globalRoute.remove(route)
-        if (globalRoute.isEmpty()) {
-            globalRoutes.removeAt(index)
-            notifyListeners()
-            return
-        }
-
-        clearChildBackStacks(globalRoute, route)
+        globalRoutes.remove(route)
+        clearChildBackStacks(route)
         notifyListeners()
     }
 
@@ -115,26 +72,21 @@ class BackStackController internal constructor() {
             return
         }
 
-        val index = globalRoutes.indexOfLast { it.contains(route) }
-        val globalRoute = globalRoutes[index]
-        globalRoute.remove(route)
-
-        if (route != withRoutes.first()) {
-            clearChildBackStacks(globalRoute, route)
+        val index = globalRoutes.indexOf(route)
+        globalRoutes.remove(route)
+        if (route != withRoutes.last()) {
+            clearChildBackStacks(route)
+        } else {
+            popChildBackStacks(route)
         }
 
-        globalRoute.add(withRoutes.first())
-        withRoutes.drop(1).forEachIndexed { i, r ->
-            globalRoutes.add(index + i + 1, GlobalRoute(r))
-        }
-
+        globalRoutes.addAll(index, withRoutes)
         notifyListeners()
     }
 
-    private fun clearChildBackStacks(globalRoute: GlobalRoute, route: Route<*>) {
-        val keysToClear = globalRoute.keys.filter { it.parentKey == route.key }
+    private fun clearChildBackStacks(route: Route<*>) {
         val backStacksToClear = backStacks.values
-            .filter { backStack -> keysToClear.contains(backStack.key) || backStack.key.hasAnyInParents(keysToClear) }
+            .filter { backStack -> backStack.key.hasParent(route.key) }
             .sortedByDescending { it.key.parentCount }
 
         backStacksToClear.forEach {
@@ -147,22 +99,24 @@ class BackStackController internal constructor() {
         }
     }
 
-    internal fun onIndexChanged(routes: List<Pair<Route<*>, Route<*>>>) {
-        routes.forEach { route ->
-            globalRoutes.first { it.contains(route.first) }.replace(route.first, route.second)
-        }
-        notifyListeners()
-    }
+    private fun popChildBackStacks(route: Route<*>) {
+        val backStacksToPop = backStacks.values
+            .filter { backStack -> backStack.key.hasParent(route.key) }
+            .sortedByDescending { it.key.parentCount }
 
-    private fun MutableList<GlobalRoute>.removeAll(routes: List<Route<*>>) {
-        routes.reversed().forEach { route ->
-            val index = indexOfLast { it.contains(route) }
+        backStacksToPop.forEach {
+            var backStackRoute = it.current
+            var popAgain = it.popFromBackStackHandler()
+            if (popAgain) {
+                globalRoutes.remove(backStackRoute)
+            }
 
-            val globalRoute = this[index]
-            globalRoute.remove(route)
-
-            if (globalRoute.isEmpty()) {
-                removeAt(index)
+            while (popAgain) {
+                backStackRoute = it.current
+                popAgain = it.popFromBackStackHandler()
+                if (popAgain) {
+                    globalRoutes.remove(backStackRoute)
+                }
             }
         }
     }
@@ -183,6 +137,6 @@ class BackStackController internal constructor() {
     }
 
     interface Listener {
-        fun onBackStackChanged(snapshot: List<GlobalRoute>)
+        fun onBackStackChanged(snapshot: List<Route<*>>)
     }
 }

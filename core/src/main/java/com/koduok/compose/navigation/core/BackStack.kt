@@ -16,11 +16,11 @@ data class BackStackKey internal constructor(val id: BackStackId, val parentKey:
         count
     }
 
-    internal fun hasAnyInParents(keys: List<BackStackKey>): Boolean {
+    internal fun hasParent(key: BackStackKey): Boolean {
         var currentParentKey = parentKey
 
         while (currentParentKey != null) {
-            if (keys.contains(currentParentKey)) return true
+            if (currentParentKey == key) return true
             currentParentKey = currentParentKey.parentKey
         }
 
@@ -28,29 +28,16 @@ data class BackStackKey internal constructor(val id: BackStackId, val parentKey:
     }
 }
 
-class BackStack<T : Any> internal constructor(val key: BackStackKey, start: RouteDescription<T>, otherStart: List<RouteDescription<T>>) {
+class BackStack<T> internal constructor(val key: BackStackKey, start: T, otherStart: List<T>) {
     private val listeners = mutableListOf<Listener<T>>()
-    private val routes = mutableListOf(Route(key, 0, start))
-        .apply { addAll(otherStart.mapIndexed { index: Int, routeDescription: RouteDescription<T> -> Route(key, 1 + index, routeDescription) }) }
+    private val routes = mutableListOf(Route(key, start)).apply { addAll(otherStart.map { Route(key, it) }) }
 
     val snapshot get() = routes.toList()
     val current get() = routes.last()
     val previous get() = routes.dropLast(1).last()
-    val currentWithShowStack: List<Route<T>>
-        get() {
-            val current = current
-            var onTop = current
-            return snapshot.takeLastWhile {
-                val take = onTop.routeDescription.showRouteBelow || it == current
-                onTop = it
-                take
-            }
-        }
 
-    fun push(vararg values: T) = push(*values.map { RouteDescription(it) }.toTypedArray())
-    fun push(vararg descriptions: RouteDescription<T>) {
-        val startIndex = current.index + 1
-        val routesToPush = descriptions.mapIndexed { index: Int, description: RouteDescription<T> -> Route(key, startIndex + index, description) }
+    fun push(vararg values: T) {
+        val routesToPush = values.map { Route(key, it) }
 
         routes.addAll(routesToPush)
         backStackController.onPushed(routesToPush)
@@ -60,41 +47,40 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
             listeners.forEach { listener -> listener.onAdded(it) }
         }
 
-        if (descriptions.isNotEmpty()) {
+        if (values.isNotEmpty()) {
             listeners.forEach { listener -> listener.onCurrentChanged(current) }
         }
     }
 
     fun pop(): Boolean {
-        if (current.index == 0) return false
+        if (routes.size == 1) return false
 
-        val removedIndex = current.index
-        val removedRoute = routes.removeAt(removedIndex)
-        backStackController.onRemoved(removedRoute)
+        val routeToRemove = current
+        routes.remove(routeToRemove)
+        backStackController.onRemoved(routeToRemove)
 
         val listeners = listeners.toList()
         listeners.forEach { listener ->
-            listener.onRemoved(removedRoute)
+            listener.onRemoved(routeToRemove)
             listener.onCurrentChanged(current)
         }
 
         return true
     }
 
-    fun popUntil(predicate: (Route<T>) -> Boolean): Boolean {
-        if (current.index == 0) return false
+    fun popAll() = popUntil { false }
+
+    fun popUntil(predicate: (snapshot: List<Route<T>>) -> Boolean): Boolean {
+        if (routes.size == 1) return false
 
         val currentRoute = current
         val listeners = listeners.toList()
-        var indexToBeRemoved = currentRoute.index
-        var routeToBeRemoved = routes[indexToBeRemoved]
-        while (routeToBeRemoved.index > 0 && !predicate(routeToBeRemoved)) {
-            routes.removeAt(indexToBeRemoved)
-            backStackController.onRemoved(routeToBeRemoved)
+        while (routes.size > 1 && !predicate(snapshot)) {
+            val routeToRemove = current
+            routes.remove(routeToRemove)
+            backStackController.onRemoved(routeToRemove)
 
-            listeners.forEach { listener -> listener.onRemoved(routeToBeRemoved) }
-            indexToBeRemoved = current.index
-            routeToBeRemoved = routes[indexToBeRemoved]
+            listeners.forEach { listener -> listener.onRemoved(routeToRemove) }
         }
 
         val newCurrent = current
@@ -105,27 +91,20 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
         return true
     }
 
-    fun popUntilAndPush(vararg routes: T, predicate: (Route<T>) -> Boolean): Boolean =
-        popUntilAndPush(*routes.map { RouteDescription(it) }.toTypedArray(), predicate = predicate)
-
-    fun popUntilAndPush(vararg descriptions: RouteDescription<T>, predicate: (Route<T>) -> Boolean): Boolean {
-        if (current.index == 0) return false
+    fun popUntilAndPush(vararg values: T, predicate: (snapshot: List<Route<T>>) -> Boolean): Boolean {
+        if (values.size == 1) return false
 
         val currentRoute = current
         val listeners = listeners.toList()
-        var indexToBeRemoved = currentRoute.index
-        var routeToBeRemoved = routes[indexToBeRemoved]
-        while (routeToBeRemoved.index > 0 && !predicate(routeToBeRemoved)) {
-            routes.removeAt(indexToBeRemoved)
-            backStackController.onRemoved(routeToBeRemoved)
+        while (values.size > 1 && !predicate(snapshot)) {
+            val routeToRemove = current
+            routes.remove(routeToRemove)
+            backStackController.onRemoved(routeToRemove)
 
-            listeners.forEach { listener -> listener.onRemoved(routeToBeRemoved) }
-            indexToBeRemoved = current.index
-            routeToBeRemoved = routes[indexToBeRemoved]
+            listeners.forEach { listener -> listener.onRemoved(routeToRemove) }
         }
 
-        val startIndex = current.index + 1
-        val routesToPush = descriptions.mapIndexed { index: Int, description: RouteDescription<T> -> Route(key, startIndex + index, description) }
+        val routesToPush = values.map { Route(key, it) }
         routes.addAll(routesToPush)
         backStackController.onPushed(routesToPush)
         routesToPush.forEach {
@@ -140,35 +119,22 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
         return true
     }
 
-    fun replace(vararg withValues: T) = replaceRoute(routes.last(), *withValues.map { RouteDescription(it) }.toTypedArray())
-    fun replace(vararg withDescriptions: RouteDescription<T>) = replaceRoute(routes.last(), *withDescriptions)
-
-    fun replaceRoute(route: Route<T>, vararg withValues: T) = replaceRoute(route, *withValues.map { RouteDescription(it) }.toTypedArray())
-    fun replaceRoute(route: Route<T>, vararg withDescriptions: RouteDescription<T>): Boolean {
+    fun replace(vararg withValues: T) = replaceRoute(current, *withValues)
+    fun replaceRoute(route: Route<T>, vararg withValues: T): Boolean {
         val routeIndex = routes.indexOf(route)
         if (routeIndex < 0) return false
 
         val currentRoute = current
-
-        val indexDelta = withDescriptions.size - 1
-        val routesToAdd = withDescriptions.mapIndexed { index: Int, description: RouteDescription<T> -> Route(key, routeIndex + index, description) }
-        val updatedIndexRoutes = if (indexDelta == 0) emptyList() else {
-            val count = routes.size - 1 - routeIndex
-            routes.takeLast(count).map { it to it.copy(index = it.index + indexDelta) }
-        }
+        val routesToAdd = withValues.map { Route(key, it) }
 
         routes.removeAt(routeIndex)
         routes.addAll(routeIndex, routesToAdd)
         backStackController.onReplaced(route, routesToAdd)
-        backStackController.onIndexChanged(updatedIndexRoutes)
 
         val listeners = listeners.toList()
         listeners.forEach { listener -> listener.onRemoved(route) }
         routesToAdd.forEach {
             listeners.forEach { listener -> listener.onAdded(it) }
-        }
-        updatedIndexRoutes.forEach {
-            listeners.forEach { listener -> listener.onIndexChanged(it.second, it.first.index) }
         }
         if (currentRoute != current) {
             listeners.forEach { listener -> listener.onCurrentChanged(current) }
@@ -178,11 +144,10 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
     }
 
     internal fun popFromBackStackHandler(): Boolean {
-        val removedIndex = current.index
-        val removedRoute = routes[removedIndex]
-        val isNotRoot = removedIndex > 0
+        val removedRoute = current
+        val isNotRoot = routes.size > 1
         if (isNotRoot) {
-            routes.removeAt(removedIndex)
+            routes.remove(removedRoute)
         }
 
         val listeners = listeners.toList()
@@ -204,10 +169,9 @@ class BackStack<T : Any> internal constructor(val key: BackStackKey, start: Rout
         listeners.remove(listener)
     }
 
-    interface Listener<T : Any> {
+    interface Listener<T> {
         fun onAdded(route: Route<T>) = Unit
         fun onRemoved(route: Route<T>) = Unit
         fun onCurrentChanged(route: Route<T>) = Unit
-        fun onIndexChanged(route: Route<T>, previousIndex: Int) = Unit
     }
 }
