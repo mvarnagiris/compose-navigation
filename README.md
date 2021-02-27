@@ -23,16 +23,9 @@ implementation 'com.github.mvarnagiris.compose-navigation:navigation:{latest_ver
 ```
 ## How to use
 
-Inside your `Activity` tell library to handle back stack:
+Define your navigation routes. Best way to do that is to use a `sealed class`. Each route can contain all necessary parameters for your screens. Your route class should be supported by `Bundle`.
 ```kotlin
-override fun onBackPressed() {
-    if (!backStackController.pop()) super.onBackPressed()
-}
-```
-
-Define your navigation routes. Best way to do that is to use a `sealed class`. Each route can contain all necessary parameters for your screens:
-```kotlin
-sealed class AppRoute {
+sealed class AppRoute: Serializable {
     object SplashRoute : AppRoute()
     object HomeRoute : AppRoute()
     data class DetailsRoute(val id: String) : AppRoute()
@@ -46,7 +39,7 @@ fun AppRoot() {
     Router<AppRoute>(start = SplashRoute) { currentRoute ->
         // this lambda has this signature: BackStack<AppRoute>.(Route<AppRoute>) -> Unit
         // this is BackStack<AppRoute>. So you can call BackStack methods easily like push(...), pop(), etc.
-        // currentRoute is Route<AppRoute> that contains current AppRoute as data and other metadata like index and back stack identifier
+        // currentRoute is Route<AppRoute> that contains current AppRoute as data and other metadata like back stack identifier
         when (val route = currentRoute.data) {
             SplashRoute -> SplashScreen(onInitialized = { replace(HomeRoute) })
             HomeRoute -> HomeScreen(onDetailsSelected = { id -> push(DetailsRoute(id)) })
@@ -78,7 +71,8 @@ BackStack operations:
 - **replaceRoute** - replace specific route with zero or more routes
 - **popUntil** - pop routes until predicate returns true or until last route
 - **popUntilAndPush** - pop routes until predicate returns true or until last route then push given routes into the back stack
+- **popAll** - pops all routes until only 1 remains
 
-`backStackController.pop()` will pop from global back stack. Each `Router` has it's own `BackStack` and all of them are controlled by `backStackController` which has global back stack
+`backStackController.pop()` will pop from global back stack. Each `Router` has it's own `BackStack` and all of them are controlled by `backStackController` which has global back stack.
 
 For more examples check out the `sample` app
