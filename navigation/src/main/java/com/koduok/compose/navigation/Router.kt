@@ -54,7 +54,7 @@ fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(
         LocalNullableBackStack.provides(anyBackStack),
         LocalOnBackPressedDispatcherEnabled.provides(true),
     ) {
-        saveableStateHolder.SaveableStateProvider(currentRoute.value) {
+        saveableStateHolder.SaveableStateProvider(currentRoute.value.toString()) {
             content(backStack, currentRoute)
         }
     }

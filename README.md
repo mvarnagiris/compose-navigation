@@ -23,9 +23,9 @@ implementation 'com.github.mvarnagiris.compose-navigation:navigation:{latest_ver
 ```
 ## How to use
 
-Define your navigation routes. Best way to do that is to use a `sealed class`. Each route can contain all necessary parameters for your screens. Your route class should be supported by `Bundle`.
+Define your navigation routes. Best way to do that is to use a `sealed class`. Each route can contain all necessary parameters for your screens.
 ```kotlin
-sealed class AppRoute: Serializable {
+sealed class AppRoute {
     object SplashRoute : AppRoute()
     object HomeRoute : AppRoute()
     data class DetailsRoute(val id: String) : AppRoute()
