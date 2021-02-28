@@ -131,6 +131,7 @@ class BackStackController internal constructor() {
     }
 
     private fun notifyListeners() {
+        val listeners = listeners.toList()
         if (listeners.isEmpty()) return
         val snapshot = snapshot
         listeners.forEach { it.onBackStackChanged(snapshot) }
