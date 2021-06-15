@@ -63,7 +63,7 @@ fun <T : Any> Router(id: BackStackId, start: T, otherStart: List<T> = emptyList(
 
 @Composable
 private fun HandleBackPress() {
-    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current.onBackPressedDispatcher
+    val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val isBackPressAlreadyHandled = LocalOnBackPressedDispatcherEnabled.current
 
     if (!isBackPressAlreadyHandled) {
@@ -73,7 +73,7 @@ private fun HandleBackPress() {
                     backStackController.pop()
                 }
             }
-            onBackPressedDispatcher.addCallback(onBackPressCallback)
+            onBackPressedDispatcher?.addCallback(onBackPressCallback)
 
             backStackController.addListener(object : Listener {
                 override fun onBackStackChanged(snapshot: List<Route<*>>) {
